@@ -12,7 +12,6 @@ namespace BackeEndBranch.Controllers
     {
 
         private readonly ApplicationDbContext context;
-
         public CoinController(ApplicationDbContext context)
         {
             this.context = context;
@@ -36,7 +35,6 @@ namespace BackeEndBranch.Controllers
         public IEnumerable<Branch> Put()
         {
             return null;
-
         }
         [HttpDelete]
         public IEnumerable<Branch> Delete()
