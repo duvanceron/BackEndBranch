@@ -15,7 +15,7 @@ namespace BackeEndBranch.Models
         [Required(ErrorMessage = "The field {0} es required '.'")]
         [StringLength(maximumLength: 50)]
         public string? IdentificationBranch { get; set; }
-        public DateTime? DateBranch { get; set; }
+        public string? DateBranch { get; set; }
         public int FKMoneyBranch { get; set; }
 
     }

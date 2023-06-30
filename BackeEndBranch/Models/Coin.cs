@@ -10,6 +10,6 @@ namespace BackeEndBranch.Models
         public string? NameCoin { get; set; }
         [Required(ErrorMessage = "The field {0} es required '.'")]
         public string? DescriptionCoin { get; set; }
-        public bool StateCoin { get; set; }
+        public string? StateCoin { get; set; }
     }
 }
