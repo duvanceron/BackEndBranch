@@ -1,7 +1,10 @@
 ﻿
+using BackeEndBranch.Interface;
 using BackeEndBranch.Models;
+using BackeEndBranch.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Xml.Linq;
 
 namespace BackeEndBranch.Controllers
@@ -11,22 +14,24 @@ namespace BackeEndBranch.Controllers
     public class BranchController : ControllerBase
     {
 
-        private readonly ApplicationDbContext context;
+        private readonly IBranchRepository _branchRepository;
 
-        public BranchController(ApplicationDbContext context)
+        public BranchController( IBranchRepository branchRepository)
         {
-            this.context = context;
+            this._branchRepository = branchRepository;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Branch>>> Get()
+        public async Task<IEnumerable<Branch>> Get()
         {
-            return await context.Branchs.ToListAsync();
+            var branchs = await _branchRepository.GetBranchs();
+            return branchs;
 
         }
+
         [HttpGet("{Id:int}")]
         public async Task<ActionResult<Branch>> Get(int id)
         {
-            var branch = await context.Branchs.FirstOrDefaultAsync(x => x.CodeBranch == id);
+            var branch = await _branchRepository.GetBranchById(id);
             if (branch == null)
             {
                 return NotFound();
@@ -38,28 +43,37 @@ namespace BackeEndBranch.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] Branch branch)
         {
-            context.Add(branch);
-            await context.SaveChangesAsync();
+            await _branchRepository.InsertBranch(branch);
             return NoContent();
 
         }
-     
+
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<Branch>> GPut(int id,[FromBody]  Branch branch)
+        public async Task<ActionResult<Branch>> Put(int id, Branch branch)
         {
-            var branchExist = await context.Branchs.FirstOrDefaultAsync(x => x.CodeBranch == id);
-            if (branchExist == null)
+            var branchExist = await _branchRepository.ExistBranch(id);
+
+            if (branchExist == false)
             {
                 return NotFound();
             }
-            await context.SaveChangesAsync();
+            branch.CodeBranch = id;
+            await _branchRepository.UpdateBranch(branch);
             return NoContent();
 
         }
-        [HttpDelete]
-        public IEnumerable<Branch> Delete()
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<Branch>> Delete(int id)
         {
-            return null;
+            var existRow = await _branchRepository.ExistBranch(id);
+            if (existRow == false)
+            {
+                return NotFound();
+            }
+            await _branchRepository.DeleteBranch(new Branch() { CodeBranch = id });
+            return NoContent();
+
 
         }
     }

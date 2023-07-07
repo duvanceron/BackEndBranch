@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BackeEndBranch.Interface;
+using BackeEndBranch.Repository;
+using Microsoft.EntityFrameworkCore;
 namespace BackeEndBranch
 {
     public static class StartUp
@@ -24,6 +26,7 @@ namespace BackeEndBranch
             });
 
             // Add services to the container.
+            builder.Services.AddTransient<IBranchRepository, BranchRepository>();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

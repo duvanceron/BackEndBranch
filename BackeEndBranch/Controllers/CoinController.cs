@@ -31,15 +31,38 @@ namespace BackeEndBranch.Controllers
             return NoContent();
 
         }
-        [HttpPut]
-        public IEnumerable<Branch> Put()
+
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult<Coin>> Put(int id, Coin coin)
         {
-            return null;
+            var coinExist = await context.Coins.FirstOrDefaultAsync(x => x.IdCoin == id);
+
+            if (coinExist == null)
+            {
+                return NotFound();
+            }
+            coin.IdCoin = coinExist.IdCoin;
+            context.ChangeTracker.Clear();
+            context.Update(coin);
+            await context.SaveChangesAsync();
+            return NoContent();
         }
-        [HttpDelete]
-        public IEnumerable<Branch> Delete()
+
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<Coin>> Delete(int id)
         {
-            return null;
+            context.ChangeTracker.Clear();
+            var existRow = await context.Coins.FirstOrDefaultAsync(x => x.IdCoin == id);
+            if (existRow == null)
+            {
+                return NotFound();
+            }
+            context.ChangeTracker.Clear();
+            context.Remove(new Coin() { IdCoin = id });
+            await context.SaveChangesAsync();
+            return NoContent();
+
 
         }
     }
